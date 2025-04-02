@@ -1,0 +1,20 @@
+{
+    "outputs":[
+        {
+            "gpio":2,
+            "inUse": true
+        },
+        {
+            "gpio":3,
+            "inUse": true
+        },
+        {
+            "gpio":4,
+            "inUse": true
+        },
+        {
+            "gpio":5,
+            "inUse": true
+        }
+    ]
+}

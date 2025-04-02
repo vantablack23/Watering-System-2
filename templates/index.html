@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teścik</title>
+</head>
+<body>
+    Witojcie!
+
+    <div>
+        {% for item in outputs%}
+            {%if item["inUse"] %}
+                <div>
+                    <label for="scales">Zawór {{ item["gpio"] }}:</label>
+                    <input type="checkbox" id="gpio-{{ item["gpio"] }}" name="valve"/>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://127.0.0.1:5000');
+
+    document.getElementsByName("valve").forEach(element => {
+        element.addEventListener("click", valveStatusChanged);
+    }); 
+
+
+    function valveStatusChanged(){   
+        if(this.checked){
+            message = this.id+"1";
+        }
+        else{
+            message = this.id+"0";
+        }
+        socket.emit('change', message);
+    }
+
+    function updateValveStatus(data){
+        data = JSON.parse(data);
+        console.log('Change: ', "gpio:", data.gpio, "status:", data.status);
+
+        valve = document.getElementById("gpio-"+data.gpio);
+        if(valve != null){
+            if(data.status==1){
+                valve.checked=true;
+            }
+            else if(data.status==0){
+                valve.checked=false;
+            }
+        }
+    }
+
+    socket.on('connect', function() {
+    });
+
+    socket.on('statusChanged', function(data) {
+        updateValveStatus(data);
+    });
+
+    socket.on('initialStatuses', function(data) {
+        updateValveStatus(data);
+    });
+
+    socket.on('message', function(data) {
+        console.log('Message content: ', data);
+    });
+</script>
+</body>
+</html>
