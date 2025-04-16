@@ -1,0 +1,23 @@
+{
+    "plans":
+    [
+        {
+            "name":"Ogrod",
+            "start": "20:00",
+            "days":["mon","tue","wed","thu","fri","sat","sun"],
+            "isActive":true,
+            "sections":[
+                {
+                    "name":"drzewka",
+                    "valves":[2,3],
+                    "duration": 30
+                },
+                {
+                    "name":"kwiatki",
+                    "valves":[4,5],
+                    "duration": 15
+                }
+            ]
+        }
+    ]
+}

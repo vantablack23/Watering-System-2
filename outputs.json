@@ -15,6 +15,10 @@
         {
             "gpio":5,
             "inUse": true
+        },
+        {
+            "gpio":6,
+            "inUse": true
         }
     ]
 }

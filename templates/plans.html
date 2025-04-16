@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teścik</title>
+</head>
+<body>
+    <h1>PLANYYY</h1>
+
+    <div>
+        {% for plan in plans%}
+            <div>
+                <a href="/plans/edit/{{plan["name"]}}">Edit</a>
+                <p>Name: {{plan["name"]}}</p>
+                <p>Start time: {{plan["start"]}}</p>
+                <ul>
+                    {% for day in plan["days"]%}
+                        <li>{{day}}</li>
+                    {% endfor %}
+                </ul>
+                <p>Active: {{plan["isActive"]}}</p>
+                {% for section in plan["sections"]%}
+                    <div>
+                        <p>Name: {{section["name"]}}</p>
+                        <ul>
+                            {% for valve in section["valves"]%}
+                                <li>{{valve}}</li>
+                            {% endfor %}
+                        </ul>
+                        <p>Duration: {{section["duration"]}} min</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

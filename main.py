@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 import json
+from markupsafe import escape
 # from gpiozero import LED
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+plansFile="plans.json"
 
 class output:
     def __init__(self, gpio, status):
@@ -26,6 +28,27 @@ def index():
     outputsJson=json.load(f)
 
     return render_template('index.html', outputs=outputsJson['outputs'])
+
+@app.route("/plans")
+def plans():
+    f=open(f"plans/{plansFile}")
+    plans=json.load(f)
+
+    return render_template('plans.html', plans=plans['plans'])
+
+@app.route("/plans/edit/<plan>")
+def editPlan(plan):
+    toEdit = escape(plan)
+    f=open(f"plans/{plansFile}")
+    plans=json.load(f)['plans']
+
+    for plan in plans:
+        if plan["name"]==toEdit:
+            return f"plan {plan['name']}"
+        
+    return f"There is no plan {toEdit} :(("
+
+
 
 @socketio.on('connect')
 def handleConnect():
