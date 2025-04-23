@@ -11,11 +11,11 @@
     <div>
         {% for plan in plans%}
             <div>
-                <a href="/plans/edit/{{plan["name"]}}">Edit</a>
-                <p>Name: {{plan["name"]}}</p>
-                <p>Start time: {{plan["start"]}}</p>
+                <a href="/plans/edit/{{plan["planName"]}}">Edit</a>
+                <p>Name: {{plan["planName"]}}</p>
+                <p>Start time: {{plan["startTime"]}}</p>
                 <ul>
-                    {% for day in plan["days"]%}
+                    {% for day in plan["weekDays"]%}
                         <li>{{day}}</li>
                     {% endfor %}
                 </ul>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO
 import json
 from markupsafe import escape
@@ -7,7 +7,8 @@ from markupsafe import escape
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-plansFile="plans.json"
+plansFile="plans/plans.json"
+outputsFile="outputs.json"
 
 class output:
     def __init__(self, gpio, status):
@@ -31,22 +32,70 @@ def index():
 
 @app.route("/plans")
 def plans():
-    f=open(f"plans/{plansFile}")
+    f=open(plansFile)
     plans=json.load(f)
 
     return render_template('plans.html', plans=plans['plans'])
 
-@app.route("/plans/edit/<plan>")
+@app.route("/plans/edit/<plan>", methods=['GET', 'POST'])
 def editPlan(plan):
     toEdit = escape(plan)
-    f=open(f"plans/{plansFile}")
-    plans=json.load(f)['plans']
+    if request.method == 'GET':
+        f=open(plansFile)
+        plans=json.load(f)['plans']
+        f.close()
 
-    for plan in plans:
-        if plan["name"]==toEdit:
-            return f"plan {plan['name']}"
-        
-    return f"There is no plan {toEdit} :(("
+        f=open(outputsFile)
+        outputs=json.load(f)["outputs"]
+        valves=[]
+        for output in outputs:
+            if output["inUse"]:
+                valves.append(output)
+        f.close()
+
+        for plan in plans:
+            if plan["planName"]==toEdit:
+                return render_template('editPlan.html', plan=plan, valves=valves)
+            
+        return f"There is no plan {toEdit} :(("
+    elif request.method == 'POST':
+        isActive = request.form.get('isActive')
+        if not isActive:
+            isActive=False
+        else:
+            isActive=True
+
+        planName = request.form.get('planName')
+        weekDays = request.form.getlist('weekDays')
+        startTime = request.form.get('startTime')
+
+        sections = []
+        i=0
+        while True:
+            name = request.form.get(f"sections[{i}][name]")
+            if not name:
+                break
+            valves = list(map(int,request.form.getlist(f"sections[{i}][valves][]")))
+            duration = int(request.form.get(f"sections[{i}][duration]"))
+            
+            sections.append({
+                'name': name,
+                'valves': valves,
+                'duration': duration
+            })
+
+            i+=1
+
+        planToSave={
+            'planName': planName,
+            'startTime': startTime,
+            'weekDays': weekDays,
+            'isActive': isActive,
+            'sections':sections
+        }
+
+        saveEditedPlan(planToSave, plansFile, toEdit)
+        return redirect(f"/plans/edit/{planName}")
 
 
 
@@ -74,6 +123,28 @@ def updateStatusesMessage(sessionId=None):
             messageData = output.__dict__
             messageData = json.dumps(messageData)
             socketio.emit('statusChanged', messageData)
+
+def saveEditedPlan(planToSave, plansFile, toEdit):
+    f=open(plansFile)
+    plans=json.load(f)['plans']
+    f.close()
+
+    i=0
+    for plan in plans:
+        if plan["planName"]==toEdit:
+            break
+        i+=1
+    plans.pop(i)
+    plans.append(planToSave)
+
+    toSave={
+        "plans":plans
+    }
+
+    f=open(plansFile,'w')
+    f.write(json.dumps(toSave))
+    f.close()
+
 
 if __name__ == '__main__':
     socketio.run(app)
