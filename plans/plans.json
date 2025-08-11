@@ -1,1 +1,26 @@
-{"plans": [{"planName": "pieski", "startTime": "22:03", "weekDays": ["mon", "fri", "sat", "sun"], "isActive": true, "sections": [{"name": "drzewka", "valves": [2, 3], "duration": 30}, {"name": "kwiatki", "valves": [4, 5], "duration": 15}]}, {"planName": "Dom", "startTime": "18:00", "weekDays": ["mon", "wed", "thu", "fri", "sat", "sun"], "isActive": false, "sections": [{"name": "drzewka", "valves": [2, 3, 6, 7], "duration": 30}, {"name": "kwiatki", "valves": [4, 5], "duration": 45}]}]}
+{
+    "plans": [
+        {
+            "planName": "pierwszy",
+            "startTime": "15:59",
+            "weekDays": [
+                "tue",
+                "wed"
+            ],
+            "isActive": true,
+            "sections": [
+                {
+                    "name": "trawa",
+                    "valves": [
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    "duration": 30
+                }
+            ]
+        }
+    ]
+}

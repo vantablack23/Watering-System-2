@@ -97,7 +97,59 @@ def editPlan(plan):
         saveEditedPlan(planToSave, plansFile, toEdit)
         return redirect(f"/plans/edit/{planName}")
 
+@app.route("/plans/add", methods=['GET','POST'])
+def addPlan():
+    if request.method == 'GET':
+        f=open(outputsFile)
+        outputs=json.load(f)["outputs"]
+        valves=[]
+        for output in outputs:
+            if output["inUse"]:
+                valves.append(output)
+        f.close()
 
+        return render_template('addPlan.html', valves=valves)
+
+    elif request.method == 'POST':
+        isActive = request.form.get('isActive')
+        if not isActive:
+            isActive=False
+        else:
+            isActive=True
+
+        planName = request.form.get('planName')
+        weekDays = request.form.getlist('weekDays')
+        startTime = request.form.get('startTime')
+
+        sections = []
+        i=0
+        while True:
+            print("dupa")
+            name = request.form.get(f"sections[{i}][name]")
+            if not name:
+                break
+            print(request.form.getlist(f"sections[{i}][valves][]"))
+            valves = list(map(int,request.form.getlist(f"sections[{i}][valves][]")))
+            duration = int(request.form.get(f"sections[{i}][duration]"))
+            
+            sections.append({
+                'name': name,
+                'valves': valves,
+                'duration': duration
+            })
+
+            i+=1
+
+        planToSave={
+            'planName': planName,
+            'startTime': startTime,
+            'weekDays': weekDays,
+            'isActive': isActive,
+            'sections':sections
+        }
+
+        saveNewPlan(planToSave, plansFile)
+        return redirect("/plans")
 
 @socketio.on('connect')
 def handleConnect():
@@ -145,6 +197,20 @@ def saveEditedPlan(planToSave, plansFile, toEdit):
     f.write(json.dumps(toSave))
     f.close()
 
+def saveNewPlan(planToSave, plansFile):
+    f=open(plansFile)
+    plans=json.load(f)['plans']
+    f.close()
+
+    plans.append(planToSave)
+
+    toSave={
+        "plans":plans
+    }
+
+    f=open(plansFile,'w')
+    f.write(json.dumps(toSave))
+    f.close()
 
 if __name__ == '__main__':
     socketio.run(app)

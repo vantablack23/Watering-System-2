@@ -35,7 +35,7 @@
         <!-- Sections -->
         {% for section in plan.get('sections', [{}]) %}
         {% set i = loop.index0 %}
-        <div id="section-{{ i }}">
+        <div id="section-{{ i }}" name="section-div">
             <h3>Section {{ i + 1 }}</h3>
             <p>
                 <label for="sections-{{ i }}-name">Section name:</label>
@@ -63,5 +63,8 @@
         <button type="submit">Save Plan</button>
     </form>
     
+    <a href="/plans">Return to plans</a>
+
+
 </body>
 </html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teścik</title>
+
+    <script id="valves-data" type="application/json">
+        {{ valves|tojson }}
+    </script>
+</head>
+<body>
+    <h1>Add new plan</h1>
+
+    <form method="post" action="{{ url_for('addPlan')}}">
+        <p>
+            <label for="isActive">Activate plan:</label>
+            <input type="checkbox" name="isActive" id="isActive" value="true">
+        </p>
+    
+        <p>
+            <label for="planName">Name:</label>
+            <input type="text" name="planName" id="planName">
+        </p>
+    
+        <p>Active on:</p>
+        {% for day in [('mon', 'Monday'), ('tue', 'Tuesday'), ('wed', 'Wednesday'), 
+                       ('thu', 'Thursday'), ('fri', 'Friday'), ('sat', 'Saturday'), ('sun', 'Sunday')] %}
+            <input type="checkbox" name="weekDays" id="weekDays{{ day[1] }}" value="{{ day[0] }}">
+            <label for="weekDays{{ day[1] }}">{{ day[1] }}</label>
+        {% endfor %}
+    
+        <p>
+            <label for="startTime">Starting time:</label>
+            <input type="time" name="startTime" id="startTime">
+        </p>
+    
+        <!-- Sections -->
+        SEKCJE
+        
+        <button type="button" id="addSection">Add</button>
+
+        <div id="sections">
+
+        </div>
+
+        <br>
+        <button type="submit">Add Plan</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='sections.js') }}"></script>
+</body>
+</html>
