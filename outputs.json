@@ -1,27 +1,31 @@
 {
-    "outputs":[
+    "outputs": [
         {
-            "gpio":2,
+            "gpio": 2,
             "inUse": true
         },
         {
-            "gpio":3,
+            "gpio": 3,
             "inUse": true
         },
         {
-            "gpio":4,
+            "gpio": 4,
             "inUse": true
         },
         {
-            "gpio":5,
+            "gpio": 5,
             "inUse": true
         },
         {
-            "gpio":6,
+            "gpio": 6,
             "inUse": true
         },
         {
-            "gpio":7,
+            "gpio": 7,
+            "inUse": true
+        },
+        {
+            "gpio": 9,
             "inUse": true
         }
     ]

@@ -7,6 +7,10 @@ sectionsDivsArr=[];
 
 addButton.addEventListener("click", function(){addButtonClicked(sectionsDiv)});
 
+document.getElementsByName("deleteSection").forEach(element => {
+    element.addEventListener("click", deleteButtonClicked);
+}); 
+
 function generateSectionNumber(){
     sectionDivs=document.getElementsByName("section-div");
 
@@ -15,7 +19,7 @@ function generateSectionNumber(){
 
 function renderDiv(sectionNr, valves){
     sectionDiv = `<div id="section-${sectionNr}" name="section-div">
-            <h3>Section ${sectionNr+1}</h3>
+            <hr>
             <p>
                 <label for="sections-${sectionNr}-name">Section name:</label>
                 <input type="text" name="sections[${sectionNr}][name]" id="sections-${sectionNr}-name">
@@ -35,13 +39,20 @@ function renderDiv(sectionNr, valves){
                 <label for="sections-${sectionNr}-duration">Duration (minutes):</label>
                 <input type="number" name="sections[${sectionNr}][duration]" id="sections-${sectionNr}-duration">
             </p>
+            <button type="button" name="deleteSection" id="delete-section-${sectionNr}">Delete</button>
         </div>`
     return sectionDiv;
 }
 
 function addButtonClicked(sectionsDiv){
-    sectionsDivsArr.push(renderDiv(sectionNr, valves));
+    sectionsDiv.insertAdjacentHTML("afterend", renderDiv(sectionNr, valves));
     sectionNr++;
-    // sectionsDiv.insertAdjacentHTML("afterend", renderDiv(sectionNr, valves));
-    sectionsDiv.innerHTML=sectionsDivsArr.join("");
+
+    document.getElementsByName("deleteSection").forEach(element => {
+        element.addEventListener("click", deleteButtonClicked);
+    }); 
+}
+
+function deleteButtonClicked(){
+    document.getElementById("section-"+this.id.slice(15)).remove();
 }

@@ -124,11 +124,9 @@ def addPlan():
         sections = []
         i=0
         while True:
-            print("dupa")
             name = request.form.get(f"sections[{i}][name]")
             if not name:
                 break
-            print(request.form.getlist(f"sections[{i}][valves][]"))
             valves = list(map(int,request.form.getlist(f"sections[{i}][valves][]")))
             duration = int(request.form.get(f"sections[{i}][duration]"))
             

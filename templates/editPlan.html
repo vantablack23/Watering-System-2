@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teścik</title>
+
+    <script id="valves-data" type="application/json">
+        {{ valves|tojson }}
+    </script>
 </head>
 <body>
     <h1>Editing plan: {{plan["planName"]}}</h1>
@@ -33,38 +37,43 @@
         </p>
     
         <!-- Sections -->
-        {% for section in plan.get('sections', [{}]) %}
-        {% set i = loop.index0 %}
-        <div id="section-{{ i }}" name="section-div">
-            <h3>Section {{ i + 1 }}</h3>
-            <p>
-                <label for="sections-{{ i }}-name">Section name:</label>
-                <input type="text" name="sections[{{ i }}][name]" id="sections-{{ i }}-name" value="{{ section.get('name', '') }}">
-            </p>
-    
-            <p>Valves:</p>
-            {% for valve in valves %}
-                <input type="checkbox"
-                       name="sections[{{ i }}][valves][]"
-                       id="sections-{{ i }}-valve-{{ valve.get('gpio', '') }}"
-                       value="{{ valve.get('gpio', '') }}"
-                       {% if valve.get('gpio', '') in section.get('valves', []) %} checked {% endif %}>
-                <label for="sections-{{ i }}-valve-{{ valve.get('gpio', '') }}">Valve {{ valve.get('gpio', '') }}</label>
+        <button type="button" id="addSection">Add</button>
+        <div id="sections">
+            {% for section in plan.get('sections', [{}]) %}
+            {% set i = loop.index0 %}
+                <div id="section-{{ i }}" name="section-div">
+                    <hr>
+                    <p>
+                        <label for="sections-{{ i }}-name">Section name:</label>
+                        <input type="text" name="sections[{{ i }}][name]" id="sections-{{ i }}-name" value="{{ section.get('name', '') }}">
+                    </p>
+            
+                    <p>Valves:</p>
+                    {% for valve in valves %}
+                        <input type="checkbox"
+                            name="sections[{{ i }}][valves][]"
+                            id="sections-{{ i }}-valve-{{ valve.get('gpio', '') }}"
+                            value="{{ valve.get('gpio', '') }}"
+                            {% if valve.get('gpio', '') in section.get('valves', []) %} checked {% endif %}>
+                        <label for="sections-{{ i }}-valve-{{ valve.get('gpio', '') }}">Valve {{ valve.get('gpio', '') }}</label>
+                    {% endfor %}
+            
+                    <p>
+                        <label for="sections-{{ i }}-duration">Duration (minutes):</label>
+                        <input type="number" name="sections[{{ i }}][duration]" id="sections-{{ i }}-duration"
+                            value="{{ section.get('duration', '') }}">
+                    </p>
+                    <button type="button" name="deleteSection" id="delete-section-{{ i }}">Delete</button>
+                </div>
             {% endfor %}
-    
-            <p>
-                <label for="sections-{{ i }}-duration">Duration (minutes):</label>
-                <input type="number" name="sections[{{ i }}][duration]" id="sections-{{ i }}-duration"
-                       value="{{ section.get('duration', '') }}">
-            </p>
         </div>
-        {% endfor %}
+
     
         <button type="submit">Save Plan</button>
     </form>
     
     <a href="/plans">Return to plans</a>
 
-
+    <script src="{{ url_for('static', filename='sections.js') }}"></script>
 </body>
 </html>
